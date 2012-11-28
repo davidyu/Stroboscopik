@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.cpsc434.stroboscopik.util.SystemUiHider;
+import com.google.android.gcm.GCMRegistrar;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -19,6 +20,9 @@ import com.cpsc434.stroboscopik.util.SystemUiHider;
  * @see SystemUiHider
  */
 public class StrobeActivity extends Activity {
+	//TAG for Log messages in this class
+	private static final String TAG = "StrobeActivity";
+	
 	/**
 	 * Whether or not the system UI should be auto-hidden after
 	 * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -54,6 +58,17 @@ public class StrobeActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		// Check for GCM Registration. Register if not registered
+		GCMRegistrar.checkDevice(this);
+		GCMRegistrar.checkManifest(this);
+		String regId = GCMRegistrar.getRegistrationId(this);
+		if (regId == "") {
+			GCMRegistrar.register(this, Constants.APP_SENDER_ID);
+		} else {
+			Log.v(TAG, "Already Registered with ID: "+regId);
+		}
+		// End GCM Registration
+		
 		setContentView(R.layout.activity_strobe);
 
 		final View controlsView = findViewById(R.id.fullscreen_content_controls);

@@ -33,3 +33,5 @@ Libraries
 ---------
 
 [JTransforms](https://sites.google.com/site/piotrwendykier/software/jtransforms)
+
+[Django-GCM](https://github.com/bogdal/django-gcm)
