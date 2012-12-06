@@ -37,7 +37,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		SharedPreferences settings = getSharedPreferences(Constants.APP_SETTINGS, MODE_PRIVATE);
 		String regId = GCMRegistrar.getRegistrationId(getApplicationContext());
 		String oldId = settings.getString(Constants.APP_GCM_REGID_KEY, regId);
-		String cluster = settings.getString(Constants.APP_GCM_CLUSTER_KEY, Constants.APP_NO_CLUSTER);
+		String cluster = settings.getString(Constants.APP_CLUSTER_KEY, Constants.APP_NO_CLUSTER);
 		
 		//Perform Registration and Unregistration
 		HttpClient httpclient = new DefaultHttpClient();
@@ -69,7 +69,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 	}
 	
 	protected void onError(Context context, String errorId) {
-		//TODO: Error of server not available already dealt with. Need to deal with other errors
+		//Error of server not available already dealt with. Need to deal with other errors
 	}
 	
 	protected void onUnregistered(Context context, String errorId) {
@@ -103,7 +103,11 @@ public class GCMIntentService extends GCMBaseIntentService {
 	}
 	
 	protected void onMessage(Context context, Intent intent) {
-		//TODO: Server has just sent a message to the cluster. Deal with it
+		SharedPreferences settings = getSharedPreferences(Constants.APP_SETTINGS, MODE_PRIVATE);
+		SharedPreferences.Editor ed = settings.edit();
+		ed.putString(Constants.APP_CLUSTER_KEY, intent.getStringExtra(Constants.APP_GCM_CLUSTER_KEY));
+		ed.putInt(Constants.APP_FREQUENCY_KEY, intent.getIntExtra(Constants.APP_GCM_FREQUENCY_KEY, Constants.APP_DEFAULT_FREQ));
+		ed.commit();
 	}
 
 	@Override
