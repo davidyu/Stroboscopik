@@ -21,7 +21,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+
     <!-- Permissions required for everything else -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
@@ -53,9 +55,40 @@
             </intent-filter>
         </receiver>
 
-        <service
-            android:name="com.cpsc434.stroboscopik.GCMIntentService" >
+        <service android:name="com.cpsc434.stroboscopik.GCMIntentService" >
         </service>
+
+        <activity
+            android:name=".BTsetup"
+            android:label="BTsetup" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.cpsc434.stroboscopik.StrobeActivity" />
+        </activity>
+        <activity
+            android:name=".Setup_list"
+            android:label="Setup_list" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.cpsc434.stroboscopik.StrobeActivity" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".DeviceList"
+            android:label="Device_list" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.cpsc434.stroboscopik.StrobeActivity" />
+        </activity>
     </application>
 
 </manifest>
