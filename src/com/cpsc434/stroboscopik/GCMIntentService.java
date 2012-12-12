@@ -17,7 +17,6 @@ import org.apache.http.message.BasicNameValuePair;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.IBinder;
 import android.util.Log;
 
 import com.google.android.gcm.GCMBaseIntentService;
@@ -33,6 +32,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		super(Constants.APP_SENDER_ID);
 	}
 	
+	@Override
 	protected void onRegistered(Context context, String registrationId) {
 		SharedPreferences settings = getSharedPreferences(Constants.APP_SETTINGS, MODE_PRIVATE);
 		String regId = GCMRegistrar.getRegistrationId(getApplicationContext());
@@ -68,10 +68,13 @@ public class GCMIntentService extends GCMBaseIntentService {
 		ed.commit();
 	}
 	
+	@Override
 	protected void onError(Context context, String errorId) {
 		//Error of server not available already dealt with. Need to deal with other errors
+		Log.e(TAG, errorId);
 	}
 	
+	@Override
 	protected void onUnregistered(Context context, String errorId) {
 		SharedPreferences settings = getSharedPreferences(Constants.APP_SETTINGS, MODE_PRIVATE);
 		String oldId = settings.getString(Constants.APP_GCM_REGID_KEY, "");
@@ -102,6 +105,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		ed.commit();
 	}
 	
+	@Override
 	protected void onMessage(Context context, Intent intent) {
 		SharedPreferences settings = getSharedPreferences(Constants.APP_SETTINGS, MODE_PRIVATE);
 		SharedPreferences.Editor ed = settings.edit();
@@ -110,9 +114,16 @@ public class GCMIntentService extends GCMBaseIntentService {
 		Log.d("onMessage", "new frequency: " + intent.getStringExtra(Constants.APP_GCM_FREQUENCY_KEY));
 		ed.commit();
 	}
+	
+    @Override
+    protected boolean onRecoverableError(Context context, String errorId) {
+        // log message
+        Log.e(TAG, "Received recoverable error: " + errorId);
+        return super.onRecoverableError(context, errorId);
+    }
 
-	@Override
-	public IBinder onBind(Intent intent) {
-		throw new UnsupportedOperationException("Binding not allowed");
-	}
+    @Override
+    protected void onDeletedMessages(Context context, int total) {
+        Log.e(TAG, "Received "+total+" deleted messages notification");
+    }
 }
