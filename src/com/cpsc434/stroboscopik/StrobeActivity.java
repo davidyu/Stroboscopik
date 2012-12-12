@@ -79,9 +79,9 @@ public class StrobeActivity extends Activity {
   private static int restB = 0;
 
   //define flashing color
-  private static int flashR = 182;
-  private static int flashG = 255;
-  private static int flashB = 0;
+  private static int flashR = 255;
+  private static int flashG = 0;
+  private static int flashB = 146;
   
   private static enum State {
     IDLE,
@@ -190,8 +190,8 @@ public class StrobeActivity extends Activity {
     String uid = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
     long seed = new BigInteger(uid, 16).longValue() + System.currentTimeMillis();
     Random r = new Random(seed);
-    int wait = 4000 /*+ (int)(r.nextDouble() * 1300)*/;
-    mHandler.postDelayed(onBecomeSupernode, wait);
+    int wait = 3000 + (int)(r.nextDouble() * 1300);
+    mHandler.postDelayed(coerceBecomeSubnode, wait);
   }
   
   private Runnable onBecomeSupernode = new Runnable(){
@@ -281,8 +281,8 @@ public class StrobeActivity extends Activity {
     int freq = settings.getInt(Constants.APP_GCM_FREQUENCY_KEY, Constants.APP_DEFAULT_FREQ);
     restPeriod = 1000/freq;
 
-    if ( flashPeriod < restPeriod ) {
-      flashPeriod = restPeriod;
+    if ( flashPeriod > restPeriod ) {
+      flashPeriod = restPeriod - 100;
     } else {
       flashPeriod = Constants.APP_DEFAULT_FADE;
     }
