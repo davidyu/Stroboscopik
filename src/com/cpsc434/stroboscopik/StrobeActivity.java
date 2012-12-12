@@ -79,9 +79,9 @@ public class StrobeActivity extends Activity {
   private static int restB = 0;
 
   //define flashing color
-  private static int flashR = 186;
-  private static int flashG = 1;
-  private static int flashB = 255;
+  private static int flashR = 182;
+  private static int flashG = 255;
+  private static int flashB = 0;
   
   private static enum State {
     IDLE,
@@ -128,7 +128,7 @@ public class StrobeActivity extends Activity {
     final View controlsView = findViewById(R.id.fullscreen_content_controls);
     final View contentView = findViewById(R.id.fullscreen_content);
 
-    startFlashing();
+    //startFlashing();
     mSystemUiHider = SystemUiHider.getInstance(this, contentView,
         HIDER_FLAGS);
     mSystemUiHider.setup();
@@ -180,10 +180,37 @@ public class StrobeActivity extends Activity {
     findViewById(R.id.dummy_button).setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        searchForSupernode();
+        //searchForSupernode();
+        initDevice();
       }
     });
   }
+ 
+  private void initDevice() {
+    String uid = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+    long seed = new BigInteger(uid, 16).longValue() + System.currentTimeMillis();
+    Random r = new Random(seed);
+    int wait = 4000 /*+ (int)(r.nextDouble() * 1300)*/;
+    mHandler.postDelayed(onBecomeSupernode, wait);
+  }
+  
+  private Runnable onBecomeSupernode = new Runnable(){
+    public void run() {
+      Toast message = Toast.makeText(getApplicationContext(), "Success! You are now a supernode!", Toast.LENGTH_SHORT);
+      message.show();
+      
+      startFlashing();
+    }
+  };
+  
+  private Runnable coerceBecomeSubnode = new Runnable(){
+    public void run() {
+      Toast message = Toast.makeText(getApplicationContext(), "Success! You are now connected to a cluster!", Toast.LENGTH_SHORT);
+      message.show();
+      
+      startFlashing();
+    }
+  };
   
   private void searchForSupernode() {
     String uid = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -342,10 +369,7 @@ public class StrobeActivity extends Activity {
 
       try {
         Log.d("PostHTTPTask", "posting to " + url + " ...");
-        
         httppost.setEntity(new UrlEncodedFormEntity(data));
-
-        //Execute the request
         HttpResponse response = httpclient.execute(httppost);
 
         if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
