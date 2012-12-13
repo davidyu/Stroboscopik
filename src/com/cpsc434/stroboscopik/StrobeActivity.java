@@ -190,8 +190,8 @@ public class StrobeActivity extends Activity {
     String uid = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
     long seed = new BigInteger(uid, 16).longValue() + System.currentTimeMillis();
     Random r = new Random(seed);
-    int wait = 3000 + (int)(r.nextDouble() * 1300);
-    mHandler.postDelayed(coerceBecomeSubnode, wait);
+    int wait = 2000 /*+ (int)(r.nextDouble() * 1300)*/;
+    mHandler.postDelayed(onBecomeSupernode, wait);
   }
   
   private Runnable onBecomeSupernode = new Runnable(){
